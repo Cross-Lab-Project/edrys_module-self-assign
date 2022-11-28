@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="description" content="Room Switcher" />
+    <title>Self Assign</title>
+
+    <script src="https://edrys-org.github.io/edrys/module/edrys.js"></script>
+
+    <script defer src="https://edrys-org.github.io/edrys/module/vendor/alpine.min.js"></script>
+    <link rel="stylesheet" href="https://edrys-org.github.io/edrys/module/vendor/water.min.css" />
+    <link rel="stylesheet" href="https://edrys-org.github.io/edrys/module/vendor/open-iconic/css/open-iconic.min.css" />
+</head>
+
+<body>
+<!--             grooms = Object.entries(Edrys.liveClass.rooms).map(([x,_])=> {return x}) -->
+    <template x-if="!!edrys" x-data="{ edrys: undefined, grooms: undefined }" x-init="Edrys.onUpdate((e) => {
+        edrys = {...e}
+        grooms = Object.entries(edrys.liveClass.rooms).map(([x,_]) => (x))
+        if (edrys.role == 'student' ) edrys.sendMessage('Q:rooms', '')
+        edrys.onMessage(
+            (edrys.role == 'student') ?
+            (m) => {
+            console.log(JSON.stringify(m))
+                if ( m.subject == 'A:rooms'){
+                    grooms = JSON.parse(m.body)
+                }
+            } :
+            (m) => {
+                console.log(JSON.stringify(m))
+                if (m.subject == 'Q:rooms'){
+                    edrys.sendMessage('A:rooms', JSON.stringify(grooms))
+                }
+                if (m.subject == 'Q:moveme'){
+                    edrys.liveClass.users[m.from].room=m.body
+                }
+            }
+        )
+    })">
+        <div>
+            <h1>Self Assing</h1>
+            <ul>
+                <template x-if="Edrys.role == 'student'" x-for="lroom in grooms">
+                    <template x-if="!lroom.match(/teacher/i) ">
+                        <li x-text="lroom" @click="Edrys.sendMessage('Q:moveme', lroom)"> </li>
+                    </template>
+                </template>
+                <template x-if="Edrys.role != 'student'" x-for="lroom in grooms">
+                    <li x-text="lroom" @click="Edrys.liveClass.users[Edrys.liveUser.name].room=lroom"> </li>
+                </template>
+            </ul>
+        </div>
+    </template>
+</body>
+
+</html>
