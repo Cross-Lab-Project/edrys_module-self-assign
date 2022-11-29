@@ -49,13 +49,17 @@
         <div>
             <h1>Self Assing</h1>
             <ul>
-                <template x-if="Edrys.role == 'student'" x-for="lroom in grooms">
+                <template x-if="Edrys.role == 'student'">
+                <template x-for="lroom in grooms">
                     <template x-if="!lroom.match(/teacher/i) ">
                         <li x-text="lroom" @click="Edrys.sendMessage('Q:moveme', lroom)"> </li>
                     </template>
                 </template>
-                <template x-if="Edrys.role != 'student'" x-for="lroom in grooms">
+                </template>
+                <template x-if="Edrys.role != 'student'">
+                <template x-for="lroom in grooms">
                     <li x-text="lroom" @click="Edrys.liveClass.users[Edrys.liveUser.name].room=lroom"> </li>
+                </template>
                 </template>
             </ul>
         </div>
