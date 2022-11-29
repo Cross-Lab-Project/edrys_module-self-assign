@@ -18,29 +18,33 @@
 
 <body>
 <!--             grooms = Object.entries(Edrys.liveClass.rooms).map(([x,_])=> {return x}) -->
-    <template x-if="!!edrys" x-data="{ edrys: undefined, grooms: undefined }" x-init="Edrys.onReady((e) => {
-        edrys = {...e}
-        grooms = Object.entries(edrys.liveClass.rooms).map(([x,_]) => (x))
-        if (edrys.role == 'student' ) edrys.sendMessage('Q:rooms', '')
-        edrys.onMessage(
-            (edrys.role == 'student') ?
-            (m) => {
-            console.log(JSON.stringify(m))
-                if ( m.subject == 'A:rooms'){
-                    grooms = JSON.parse(m.body)
-                }
-            } :
-            (m) => {
+    <template x-if="!!edrys" x-data="{ edrys: undefined, grooms: undefined }" x-init="
+        Edrys.onUpdate(
+            (e) => {
+                edrys = {...e}
+                if ( edrys.role == 'teacher' ) grooms = Object.entries(edrys.liveClass.rooms).map(([x,_]) => (x))
+            })
+        Edrys.onReady((e) => {
+            if (edrys.role == 'student' ) edrys.sendMessage('Q:rooms', '')
+            edrys.onMessage(
+                (edrys.role == 'student') ?
+                (m) => {
                 console.log(JSON.stringify(m))
-                if (m.subject == 'Q:rooms'){
-                    edrys.sendMessage('A:rooms', JSON.stringify(grooms))
+                    if ( m.subject == 'A:rooms'){
+                        grooms = JSON.parse(m.body)
+                    }
+                } :
+                (m) => {
+                    console.log(JSON.stringify(m))
+                    if (m.subject == 'Q:rooms'){
+                        edrys.sendMessage('A:rooms', JSON.stringify(grooms))
+                    }
+                    if (m.subject == 'Q:moveme'){
+                        edrys.liveClass.users[m.from].room=m.body
+                    }
                 }
-                if (m.subject == 'Q:moveme'){
-                    edrys.liveClass.users[m.from].room=m.body
-                }
-            }
-        ,true)
-    })">
+            ,true)})
+    ">
         <div>
             <h1>Self Assing</h1>
             <ul>
