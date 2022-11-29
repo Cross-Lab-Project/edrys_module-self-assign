@@ -22,9 +22,10 @@
         Edrys.onUpdate(
             (e) => {
                 edrys = {...e}
-                if ( edrys.role == 'teacher' ) grooms = Object.entries(edrys.liveClass.rooms).map(([x,_]) => (x))
+                if ( edrys.role != 'student' ) grooms = Object.entries(edrys.liveClass.rooms).map(([x,_]) => (x))
             })
         Edrys.onReady((e) => {
+            edrys = {...e}
             if (edrys.role == 'student' ) edrys.sendMessage('Q:rooms', '')
             edrys.onMessage(
                 (edrys.role == 'student') ?
