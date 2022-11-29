@@ -18,7 +18,7 @@
 
 <body>
 <!--             grooms = Object.entries(Edrys.liveClass.rooms).map(([x,_])=> {return x}) -->
-    <template x-if="!!edrys" x-data="{ edrys: undefined, grooms: undefined }" x-init="Edrys.onUpdate((e) => {
+    <template x-if="!!edrys" x-data="{ edrys: undefined, grooms: undefined }" x-init="Edrys.onReady((e) => {
         edrys = {...e}
         grooms = Object.entries(edrys.liveClass.rooms).map(([x,_]) => (x))
         if (edrys.role == 'student' ) edrys.sendMessage('Q:rooms', '')
